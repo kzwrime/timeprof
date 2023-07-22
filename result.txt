@@ -1,0 +1,44 @@
+  func_a
+    func_b
+      func_c
+        func_d
+    func_b
+      func_c
+        func_d
+    func_c
+      func_d
+  func_b
+    func_c
+      func_d
+
+
+ Wall time,    Relative,    Absolute,  Call time,   Function
+  0.000234,   100.000 %,   100.000 %,          1,   func_a
+  0.000041,    17.532 %,    17.532 %,          2,    func_b
+  0.000022,    53.705 %,     9.416 %,          2,     func_c
+  0.000006,    25.614 %,     2.412 %,          2,      func_d
+  0.000008,     3.293 %,     3.293 %,          1,    func_c
+  0.000003,    33.801 %,     1.113 %,          1,     func_d
+
+  0.000012,   100.000 %,   100.000 %,          1,   func_b
+  0.000007,    60.905 %,    60.905 %,          1,    func_c
+  0.000002,    34.335 %,    20.911 %,          1,     func_d
+
+
+
+-------------------
+
+ Wall time,    Relative,    Absolute,   Function,   Extra info (may be empty)
+  0.000234,   100.000 %,   100.000 %,   func_a,     
+  0.000028,    12.059 %,    12.059 %,    func_b,    some other info
+  0.000014,    50.385 %,     6.076 %,     func_c,   
+  0.000003,    20.610 %,     1.252 %,      func_d,  len=0
+  0.000013,     5.473 %,     5.473 %,    func_b,    some other info
+  0.000008,    61.019 %,     3.340 %,     func_c,   
+  0.000003,    34.718 %,     1.159 %,      func_d,  len=1
+  0.000008,     3.293 %,     3.293 %,    func_c,    
+  0.000003,    33.801 %,     1.113 %,     func_d,   len=2
+
+  0.000012,   100.000 %,   100.000 %,   func_b,     some other info
+  0.000007,    60.905 %,    60.905 %,    func_c,    
+  0.000002,    34.335 %,    20.911 %,     func_d,   len=3
