@@ -18,19 +18,15 @@ void Timeprof::combine(Timeprof_item &current_item) {
   for (auto &item : current_item.sub_regions) {
     auto iter = combine_hashmap.find(item.name);
 
-    Timeprof_item &this_combined_item = item;
-
     if (iter == combine_hashmap.end()) {
       combine_vector.push_back(item);
       combine_hashmap.insert({item.name, &combine_vector.back()});
-      this_combined_item = combine_vector.back();
     } else {
       iter->second->sub_regions.insert(iter->second->sub_regions.end(),
                                        item.sub_regions.begin(),
                                        item.sub_regions.end());
       iter->second->seconds += item.seconds;
       iter->second->calltime++;
-      this_combined_item = *iter->second;
     }
   }
 
