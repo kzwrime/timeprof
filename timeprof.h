@@ -37,7 +37,6 @@ public:
     this->calltime = item->calltime;
   }
   void delete_all(){
-    printf("name: %s, sub_regions.size: %lu\n", name.c_str(), sub_regions.size());
     for(auto item : sub_regions){
       item->delete_all();
       delete item;
