@@ -22,10 +22,27 @@ public:
   time_t start;
   time_t end;
   double seconds;
-  std::vector<Timeprof_item> sub_regions;
+  std::vector<Timeprof_item *> sub_regions;
   int region_depth;
   Timeprof_item *parent_region;
   int calltime = 1; // only used in print
+  void copy_info(const Timeprof_item* item){
+    this->name = item->name;
+    this->extra_info = item->extra_info;
+    this->start = item->start;
+    this->end = item->end;
+    this->seconds = item->seconds;
+    this->region_depth = item->region_depth;
+    this->parent_region = item->parent_region;
+    this->calltime = item->calltime;
+  }
+  void delete_all(){
+    printf("name: %s, sub_regions.size: %lu\n", name.c_str(), sub_regions.size());
+    for(auto item : sub_regions){
+      item->delete_all();
+      delete item;
+    }
+  }
 };
 
 template <typename T1, typename T2> struct PairHash {
@@ -63,16 +80,19 @@ private:
     return v1.seconds > v2.seconds;
   }
 
-  std::unordered_map<std::string, Timeprof_item *> combine_hashmap;
-  std::vector<Timeprof_item> combine_vector;
-  void combine(Timeprof_item &current_item);
-  std::tuple<int, int, int> get_max_name_len_depth(Timeprof_item &current_item, int begin_depth);
-  void print_combined(Timeprof_item &current_item, double all_seconds,
+  static bool cmp_timeprof_item_pointer(Timeprof_item *v1, Timeprof_item *v2) {
+    return v1->seconds > v2->seconds;
+  }
+
+  Timeprof_item *combine(const Timeprof_item *current_item);
+  std::tuple<int, int, int> get_max_name_len_depth(const Timeprof_item *current_item,
+                                                   int begin_depth);
+  void print_combined(const Timeprof_item *current_item, double all_seconds,
                       double parent_seconds, int offset);
 
-  void print(Timeprof_item &current_item, double all_seconds,
+  void print(const Timeprof_item *current_item, double all_seconds,
              double parent_seconds, int offset);
-  void print(Timeprof_item &current_item, double all_seconds,
+  void print(const Timeprof_item *current_item, double all_seconds,
              double parent_seconds, int offset, int max_name_len);
 
 public:
