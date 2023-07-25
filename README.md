@@ -59,6 +59,8 @@ Test:
 ```bash
 g++ timeprof.cpp -c -g -Wall && gcc test.c -c -g -Wall && g++ timeprof.o test.o
 ./a.out
+# optional, use valgrind to detect memory leak, run the command and see valReport
+valgrind --log-file=valReport --leak-check=full --show-reachable=yes --leak-resolution=low ./a.out
 ```
 
 Example result.

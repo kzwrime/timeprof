@@ -44,11 +44,11 @@ public:
       sub_regions.push_back(tmp_item);
     }
   }
-  void delete_all() {
-    for (auto item : sub_regions) {
-      item->delete_all();
-      delete item;
+  static void delete_all(Timeprof_item *item_in) {
+    for (auto item : item_in->sub_regions) {
+      delete_all(item);
     }
+    delete item_in;
   }
 };
 
@@ -111,6 +111,8 @@ public:
 
   void print_frame_sorted();
   void print_all();
+
+  void delete_all();
 };
 
 extern tpf::Timeprof stpf;
@@ -127,6 +129,7 @@ void timeprof_end_();
 void timeprof_print_frame_sorted_();
 void timeprof_print_all_();
 void timeprof_start_with_info_(const char *name, const char *info);
+void timeprof_delete_all_();
 #ifdef __cplusplus
 }
 #endif

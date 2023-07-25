@@ -134,8 +134,7 @@ void Timeprof::print_frame_sorted() {
     print_combined(item, item->seconds, item->seconds, 0);
     printf("\n");
   }
-  combined_item->delete_all();
-  delete combined_item;
+  Timeprof_item::delete_all(combined_item);
 }
 
 void Timeprof::print_all() {
@@ -153,6 +152,12 @@ void Timeprof::print_all() {
   }
 }
 
+void Timeprof::delete_all() {
+  for (auto item : current_item->sub_regions) {
+    Timeprof_item::delete_all(item);
+  }
+}
+
 }; // namespace tpf
 
 static tpf::Timeprof stpf;
@@ -164,5 +169,6 @@ void timeprof_start_with_info_(const char *name, const char *info) {
 }
 void timeprof_end_() { stpf.end(); };
 void timeprof_print_frame_sorted_() { stpf.print_frame_sorted(); }
-void timeprof_print_all_() { stpf.print_all(); };
+void timeprof_print_all_() { stpf.print_all(); }
+void timeprof_delete_all_() { stpf.delete_all(); }
 }

@@ -50,4 +50,6 @@ int main() {
   printf("\n\n-------------------\n\n");
 
   timeprof_print_all_();
+
+  timeprof_delete_all_();
 }
