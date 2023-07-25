@@ -12,39 +12,35 @@
 
 namespace tpf {
 
-Timeprof_item *Timeprof::combine(const Timeprof_item *current_item) {
+void Timeprof::combine(Timeprof_item *current_item) {
   std::unordered_map<std::string, Timeprof_item *> combine_hashmap;
-  std::vector<Timeprof_item *> combine_vector;
 
   for (auto item : current_item->sub_regions) {
-    combine_vector.push_back(combine(item));
-  }
-
-  for (auto item : combine_vector) {
     auto iter = combine_hashmap.find(item->name);
     if (iter != combine_hashmap.end()) {
       iter->second->seconds += item->seconds;
       iter->second->sub_regions.insert(iter->second->sub_regions.end(),
                                        item->sub_regions.begin(),
                                        item->sub_regions.end());
+      delete item;
     } else {
       combine_hashmap.insert({item->name, item});
     }
   }
 
-  combine_vector.clear();
+  for (auto item : combine_hashmap) {
+    combine(item.second);
+  }
+
+  current_item->sub_regions.clear();
   std::transform(combine_hashmap.begin(), combine_hashmap.end(),
-                 std::back_inserter(combine_vector),
+                 std::back_inserter(current_item->sub_regions),
                  [](const std::pair<std::string, Timeprof_item *> &p) {
                    return p.second;
                  });
-  std::sort(combine_vector.begin(), combine_vector.end(),
-            cmp_timeprof_item_pointer);
 
-  Timeprof_item *combined_item = new Timeprof_item;
-  combined_item->copy_info(current_item);
-  combined_item->sub_regions = combine_vector;
-  return combined_item;
+  std::sort(current_item->sub_regions.begin(), current_item->sub_regions.end(),
+            cmp_timeprof_item_pointer);
 }
 
 std::tuple<int, int, int>
@@ -130,7 +126,9 @@ void Timeprof::end() {
 }
 
 void Timeprof::print_frame_sorted() {
-  Timeprof_item *combined_item = combine(current_item);
+  Timeprof_item *combined_item = new Timeprof_item;
+  combined_item->copy_all(current_item);
+  combine(combined_item);
   printf(" Wall time,    Relative,    Absolute,  Call time,   Function\n");
   for (auto &item : combined_item->sub_regions) {
     print_combined(item, item->seconds, item->seconds, 0);

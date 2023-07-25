@@ -26,7 +26,7 @@ public:
   int region_depth;
   Timeprof_item *parent_region;
   int calltime = 1; // only used in print
-  void copy_info(const Timeprof_item* item){
+  void copy_info(const Timeprof_item *item) {
     this->name = item->name;
     this->extra_info = item->extra_info;
     this->start = item->start;
@@ -36,8 +36,16 @@ public:
     this->parent_region = item->parent_region;
     this->calltime = item->calltime;
   }
-  void delete_all(){
-    for(auto item : sub_regions){
+  void copy_all(const Timeprof_item *copy_item) {
+    copy_info(copy_item);
+    for (auto item : copy_item->sub_regions) {
+      Timeprof_item *tmp_item = new Timeprof_item;
+      tmp_item->copy_all(item);
+      sub_regions.push_back(tmp_item);
+    }
+  }
+  void delete_all() {
+    for (auto item : sub_regions) {
       item->delete_all();
       delete item;
     }
@@ -83,9 +91,9 @@ private:
     return v1->seconds > v2->seconds;
   }
 
-  Timeprof_item *combine(const Timeprof_item *current_item);
-  std::tuple<int, int, int> get_max_name_len_depth(const Timeprof_item *current_item,
-                                                   int begin_depth);
+  void combine(Timeprof_item *current_item);
+  std::tuple<int, int, int>
+  get_max_name_len_depth(const Timeprof_item *current_item, int begin_depth);
   void print_combined(const Timeprof_item *current_item, double all_seconds,
                       double parent_seconds, int offset);
 
