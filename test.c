@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "timeprof.h"
 
@@ -11,6 +12,7 @@ void func_d(int len) {
   depth++;
   printf("%*s%s\n", depth * 2, "", __func__);
   depth--;
+  sleep(1);
   timeprof_end_();
 }
 void func_c() {
@@ -20,6 +22,7 @@ void func_c() {
   printf("%*s%s\n", depth * 2, "", __func__);
   func_d(count++);
   depth--;
+  sleep(1);
   timeprof_end_();
 }
 void func_b() {
@@ -28,6 +31,7 @@ void func_b() {
   printf("%*s%s\n", depth * 2, "", __func__);
   func_c();
   depth--;
+  sleep(1);
   timeprof_end_();
 }
 void func_a() {

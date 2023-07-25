@@ -82,32 +82,34 @@ Example result.
 The following part is the output by timeprof.
 
  Wall time,    Relative,    Absolute,  Call time,   Function
-  0.000234,   100.000 %,   100.000 %,          1,   func_a
-  0.000041,    17.532 %,    17.532 %,          2,    func_b
-  0.000022,    53.705 %,     9.416 %,          2,     func_c
-  0.000006,    25.614 %,     2.412 %,          2,      func_d
-  0.000008,     3.293 %,     3.293 %,          1,    func_c
-  0.000003,    33.801 %,     1.113 %,          1,     func_d
+  8.003162,   100.000 %,   100.000 %,          1,   func_a
+  6.002196,    74.998 %,    74.998 %,          1,    func_b
+  4.001102,    66.661 %,    49.994 %,          1,     func_c
+  2.000555,    50.000 %,    24.997 %,          1,      func_d
+  2.000731,    24.999 %,    24.999 %,          1,    func_c
+  1.000319,    49.998 %,    12.499 %,          1,     func_d
 
-  0.000012,   100.000 %,   100.000 %,          1,   func_b
-  0.000007,    60.905 %,    60.905 %,          1,    func_c
-  0.000002,    34.335 %,    20.911 %,          1,     func_d
+  3.000807,   100.000 %,   100.000 %,          1,   func_b
+  2.000561,    66.667 %,    66.667 %,          1,    func_c
+  1.000354,    50.004 %,    33.336 %,          1,     func_d
 
 -------------------
- Wall time,    Relative,    Absolute,   Function,   Extra info (may be empty)
-  0.000234,   100.000 %,   100.000 %,   func_a,     
-  0.000028,    12.059 %,    12.059 %,    func_b,    some other info
-  0.000014,    50.385 %,     6.076 %,     func_c,   
-  0.000003,    20.610 %,     1.252 %,      func_d,  len=0
-  0.000013,     5.473 %,     5.473 %,    func_b,    some other info
-  0.000008,    61.019 %,     3.340 %,     func_c,   
-  0.000003,    34.718 %,     1.159 %,      func_d,  len=1
-  0.000008,     3.293 %,     3.293 %,    func_c,    
-  0.000003,    33.801 %,     1.113 %,     func_d,   len=2
 
-  0.000012,   100.000 %,   100.000 %,   func_b,     some other info
-  0.000007,    60.905 %,    60.905 %,    func_c,    
-  0.000002,    34.335 %,    20.911 %,     func_d,   len=3
+ Wall time,    Relative,    Absolute,   Function,   Extra info (may be empty)
+  8.003162,   100.000 %,   100.000 %,   func_a,     
+  3.000812,    37.495 %,    37.495 %,    func_b,    some other info
+  2.000425,    66.663 %,    24.995 %,     func_c,   
+  1.000239,    50.001 %,    12.498 %,      func_d,  len=0
+  3.001384,    37.502 %,    37.502 %,    func_b,    some other info
+  2.000677,    66.658 %,    24.999 %,     func_c,   
+  1.000317,    49.999 %,    12.499 %,      func_d,  len=1
+  2.000731,    24.999 %,    24.999 %,    func_c,    
+  1.000319,    49.998 %,    12.499 %,     func_d,   len=2
+
+  3.000807,   100.000 %,   100.000 %,   func_b,     some other info
+  2.000561,    66.667 %,    66.667 %,    func_c,    
+  1.000354,    50.004 %,    33.336 %,     func_d,   len=3
+
 ```
 
 Example code.
@@ -115,6 +117,7 @@ Example code.
 ```c
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "timeprof.h"
 
@@ -126,6 +129,7 @@ void func_d(int len) {
   depth++;
   printf("%*s%s\n", depth * 2, "", __func__);
   depth--;
+  sleep(1);
   timeprof_end_();
 }
 void func_c() {
@@ -135,6 +139,7 @@ void func_c() {
   printf("%*s%s\n", depth * 2, "", __func__);
   func_d(count++);
   depth--;
+  sleep(1);
   timeprof_end_();
 }
 void func_b() {
@@ -143,6 +148,7 @@ void func_b() {
   printf("%*s%s\n", depth * 2, "", __func__);
   func_c();
   depth--;
+  sleep(1);
   timeprof_end_();
 }
 void func_a() {
@@ -159,13 +165,16 @@ int main() {
   func_a();
   func_b();
 
-  printf("\n\nThe following part is output by timeprof.\n\n");
+  printf("\n\n");
 
   timeprof_print_frame_sorted_();
-  printf("-------------------\n");
+  printf("\n\n-------------------\n\n");
 
   timeprof_print_all_();
+
+  timeprof_delete_all_();
 }
+
 ```
 
 ## Others
