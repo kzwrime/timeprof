@@ -19,6 +19,7 @@ void Timeprof::combine(Timeprof_item *current_item) {
     auto iter = combine_hashmap.find(item->name);
     if (iter != combine_hashmap.end()) {
       iter->second->seconds += item->seconds;
+      iter->second->calltime += item->calltime;
       iter->second->sub_regions.insert(iter->second->sub_regions.end(),
                                        item->sub_regions.begin(),
                                        item->sub_regions.end());
